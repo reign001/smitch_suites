@@ -7,8 +7,6 @@ from django.contrib import messages
 
 
 def staff_login(request):
-    print("LOGIN VIEW HIT")
-
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Bookings</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #f5f1eb;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        a.button {
+            padding: 10px 15px;
+            background: #8b5e34;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f2f2f2;
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            background: #c28b45;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+<body>
+
+<h1>All Bookings</h1>
+
+<a href="{% url 'reception:create_booking' %}" class="button">
+    Create New Booking
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Guest</th>
+            <th>Phone</th>
+            <th>Room</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.guest.full_name }}</td>
+            <td>{{ booking.guest.phone }}</td>
+            <td>{{ booking.room.room_number }}</td>
+            <td>{{ booking.check_in_date }}</td>
+            <td>{{ booking.check_out_date }}</td>
+            <td>{{ booking.status }}</td>
+            <td>₦{{ booking.total_amount }}</td>
+
+            <td>
+                <a href="{% url 'reception:booking_detail' booking.id %}" class="view-btn">
+                    View
+                </a>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="8">No bookings yet.</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+</body>
+</html>

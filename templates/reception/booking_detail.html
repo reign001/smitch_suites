@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmed - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* Success Header */
+        .success-header {
+            background: linear-gradient(135deg, #3b2415, #5c3a24);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 52px;
+            margin-bottom: 12px;
+        }
+
+        .success-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .success-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        /* Booking Details */
+        .details {
+            padding: 40px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0e9df;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #3b2415;
+            width: 45%;
+        }
+
+        .detail-value {
+            color: #2c2c2c;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .amount {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #3b2415;
+        }
+
+        /* Buttons */
+        .actions {
+            padding: 0 40px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 16px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3b2415;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c1a10;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: #f5f1eb;
+            color: #3b2415;
+            border: 2px solid #e0d5c0;
+        }
+
+        .btn-secondary:hover {
+            background: #ebe3d8;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .details {
+                padding: 30px 25px;
+            }
+            .success-header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- Success Header -->
+        <div class="success-header">
+            <div class="success-icon">✅</div>
+            <h1>Booking Created Successfully!</h1>
+            <p>Your reservation has been confirmed</p>
+        </div>
+
+        <!-- Booking Details -->
+        <div class="details">
+            <div class="detail-row">
+                <div class="detail-label">Guest Name</div>
+                <div class="detail-value">{{ booking.guest.full_name }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Phone Number</div>
+                <div class="detail-value">{{ booking.guest.phone }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Room Number</div>
+                <div class="detail-value">{{ booking.room.room_number }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Room Type</div>
+                <div class="detail-value">{{ booking.room.room_type }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Check-in Date</div>
+                <div class="detail-value">{{ booking.check_in_date }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Check-out Date</div>
+                <div class="detail-value">{{ booking.check_out_date }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Total Amount</div>
+                <div class="detail-value amount">₦{{ booking.total_amount }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Amount Paid</div>
+                <div class="detail-value amount">₦{{ booking.amount_paid }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Outstanding Balance</div>
+                <div class="detail-value amount">₦{{ booking.balance }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    <strong style="color: #155724;">{{ booking.status }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <a href="{% url 'reception:create_booking' %}" class="btn btn-primary">
+                Create Another Booking
+            </a>
+            <a href="{% url 'reception:dashboard' %}" class="btn btn-secondary">
+                ← Back to Dashboard
+            </a>
+            <a href="{% url 'reception:download_booking_pdf' booking.id %}" class="btn btn-secondary">
+                Download PDF
+            </a>
+        </div>
+        
+    </div>
+</body>
+</html>

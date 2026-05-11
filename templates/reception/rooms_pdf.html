@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            font-family: Helvetica;
+            font-size: 12px;
+            color: #333;
+        }
+
+        h1, h3 {
+            text-align: center;
+            color: #3b2415;
+        }
+
+        .summary {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 7px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Smitch Suites, Lugbe</h1>
+<h3>Room Status Report</h3>
+
+<table class="summary">
+    <tr>
+        <th>Total Rooms</th>
+        <td>{{ total_rooms }}</td>
+        <th>Empty Rooms</th>
+        <td>{{ available_rooms }}</td>
+    </tr>
+    <tr>
+        <th>Booked Rooms</th>
+        <td>{{ reserved_rooms }}</td>
+        <th>Occupied Rooms</th>
+        <td>{{ occupied_rooms }}</td>
+    </tr>
+    <tr>
+        <th>Dirty Rooms</th>
+        <td>{{ dirty_rooms }}</td>
+        <th>Maintenance</th>
+        <td>{{ maintenance_rooms }}</td>
+    </tr>
+</table>
+
+<table>
+    <thead>
+        <tr>
+            <th>Room Number</th>
+            <th>Room Type</th>
+            <th>Price Per Night</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for room in rooms %}
+        <tr>
+            <td>{{ room.room_number }}</td>
+            <td>{{ room.room_type }}</td>
+            <td>NGN {{ room.price_per_night }}</td>
+            <td>
+                {% if room.status == 'AVAILABLE' %}
+                    Empty
+                {% elif room.status == 'RESERVED' %}
+                    Booked
+                {% elif room.status == 'OCCUPIED' %}
+                    Occupied
+                {% elif room.status == 'DIRTY' %}
+                    Dirty
+                {% elif room.status == 'MAINTENANCE' %}
+                    Maintenance
+                {% else %}
+                    {{ room.status }}
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No rooms available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

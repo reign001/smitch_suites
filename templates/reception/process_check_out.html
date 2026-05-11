@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Process Check Out - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b2415, #5c3a24);
+            color: white;
+            padding: 35px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h3 {
+            color: #3b2415;
+            margin: 25px 0 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #e0d5c0;
+            padding-bottom: 8px;
+        }
+
+        /* Guest Details */
+        .guest-info {
+            background: #f9f5f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #e0d5c0;
+        }
+
+        .guest-info p {
+            margin: 10px 0;
+            font-size: 15.5px;
+        }
+
+        .guest-info strong {
+            color: #3b2415;
+            width: 140px;
+            display: inline-block;
+        }
+
+        /* Bill Summary */
+        .bill-summary {
+            background: #f9f5f0;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0d5c0;
+        }
+
+        .bill-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 18px;
+            color: #3b2415;
+        }
+
+        /* Extra Charges Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+            padding: 14px 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f0e9df;
+        }
+
+        tr:hover {
+            background-color: #fffaf5;
+        }
+
+        .price {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Form */
+        button[type="submit"] {
+            margin-top: 25px;
+            width: 100%;
+            background: #3b2415;
+            color: white;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background: #2c1a10;
+            transform: translateY(-3px);
+        }
+
+        .back-link, .pdf-link {
+            display: inline-block;
+            margin: 15px 10px 15px 0;
+            color: #3b2415;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .pdf-link {
+            color: #c28b45;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>Process Guest Check Out</h1>
+        </div>
+
+        <div class="content">
+
+            <a href="{% url 'reception:check_out_guest' %}" class="back-link">← Back to Check Out List</a>
+
+            <!-- Guest Details -->
+            <h3>Guest Details</h3>
+            <div class="guest-info">
+                <p><strong>Name:</strong> {{ booking.guest.full_name }}</p>
+                <p><strong>Phone:</strong> {{ booking.guest.phone }}</p>
+                <p><strong>Room:</strong> {{ booking.room.room_number }} - {{ booking.room.room_type }}</p>
+                <p><strong>Stay Period:</strong> {{ booking.check_in_date }} to {{ booking.check_out_date }}</p>
+            </div>
+
+            <!-- Bill Summary -->
+            <h3>Bill Summary</h3>
+            <div class="bill-summary">
+                <div class="bill-row">
+                    <span>Accommodation Charges</span>
+                    <span>₦{{ accommodation_amount }}</span>
+                </div>
+                <div class="bill-row">
+                    <span>Extra Charges</span>
+                    <span>₦{{ extra_charges_total }}</span>
+                </div>
+                <div class="bill-row">
+                    <span><strong>Grand Total</strong></span>
+                    <span><strong>₦{{ grand_total }}</strong></span>
+                </div>
+                <div class="bill-row">
+                    <span>Total Paid</span>
+                    <span>₦{{ total_paid }}</span>
+                </div>
+                <div class="bill-row">
+                    <span><strong>Balance Due</strong></span>
+                    <span style="color: #d9534f; font-size: 19px;">
+                        ₦{{ balance }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Extra Charges Table -->
+            <h3>Extra Charges</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for charge in charges %}
+                        <tr>
+                            <td>{{ charge.category }}</td>
+                            <td>{{ charge.item_name }}</td>
+                            <td>{{ charge.quantity }}</td>
+                            <td>₦{{ charge.unit_price }}</td>
+                            <td class="price">₦{{ charge.total_amount }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align:center; padding:30px; color:#777;">
+                                No extra charges recorded.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Finalize Checkout -->
+            <h3>Finalize Checkout</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Confirm Check Out &amp; Release Room</button>
+            </form>
+
+            <br>
+            <a href="{% url 'reception:download_checkout_pdf' booking.id %}" class="pdf-link">
+                📄 Download Checkout Bill (PDF)
+            </a>
+
+        </div>
+    </div>
+</body>
+</html>

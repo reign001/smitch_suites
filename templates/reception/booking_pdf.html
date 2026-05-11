@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            font-family: Helvetica;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #5c3317;
+            margin-bottom: 5px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background: #5c3317;
+            color: white;
+            text-align: left;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Smitch Suites, Lugbe</h1>
+    <p>Hotel Booking Confirmation</p>
+</div>
+
+<div class="section">
+    <table>
+        <tr>
+            <th>Booking ID</th>
+            <td>#{{ booking.id }}</td>
+        </tr>
+
+        <tr>
+            <th>Guest Name</th>
+            <td>{{ booking.guest.full_name }}</td>
+        </tr>
+
+        <tr>
+            <th>Phone</th>
+            <td>{{ booking.guest.phone }}</td>
+        </tr>
+
+        <tr>
+            <th>Email</th>
+            <td>{{ booking.guest.email }}</td>
+        </tr>
+
+        <tr>
+            <th>Room Number</th>
+            <td>{{ booking.room.room_number }}</td>
+        </tr>
+
+        <tr>
+            <th>Room Type</th>
+            <td>{{ booking.room.room_type }}</td>
+        </tr>
+
+        <tr>
+            <th>Check-in Date</th>
+            <td>{{ booking.check_in_date }}</td>
+        </tr>
+
+        <tr>
+            <th>Check-out Date</th>
+            <td>{{ booking.check_out_date }}</td>
+        </tr>
+
+        <tr>
+            <th>Total Amount</th>
+            <td>₦{{ booking.total_amount }}</td>
+        </tr>
+
+        <tr>
+            <th>Amount Paid</th>
+            <td>₦{{ booking.amount_paid }}</td>
+        </tr>
+
+        <tr>
+            <th>Balance</th>
+            <td>₦{{ booking.balance }}</td>
+        </tr>
+
+        <tr>
+            <th>Status</th>
+            <td>{{ booking.status }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="footer">
+    <p>Thank you for choosing Smitch Suites, Lugbe.</p>
+</div>
+
+</body>
+</html>

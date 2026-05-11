@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Finance Dashboard - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3b2415;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* Navigation */
+        .nav-links {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .nav-links a {
+            color: #3b2415;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: #3b2415;
+            color: white;
+        }
+
+        /* Income Cards */
+        .income-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .income-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
+        }
+
+        .income-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .income-card h3 {
+            color: #777;
+            font-size: 14.5px;
+            margin-bottom: 8px;
+        }
+
+        .income-card h2 {
+            color: #3b2415;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        /* Summary Section */
+        .summary {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        .summary h2 {
+            margin: 15px 0;
+            font-size: 26px;
+        }
+
+        .net-balance {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .positive { color: #28a745; }
+        .negative { color: #d9534f; }
+
+        @media (max-width: 768px) {
+            .income-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <h1>Finance Dashboard</h1>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="{% url 'finances:expense_list' %}">Expenses</a>
+            <a href="{% url 'finances:create_expense' %}">+ Record Expense</a>
+            <a href="{% url 'finances:daily_finance_report' %}">Daily Finance Report</a>
+        </div>
+
+        <!-- Income Breakdown -->
+        <div class="income-grid">
+            <div class="income-card">
+                <h3>Accommodation Income</h3>
+                <h2>₦{{ accommodation_income }}</h2>
+            </div>
+            <div class="income-card">
+                <h3>Restaurant Income</h3>
+                <h2>₦{{ restaurant_income }}</h2>
+            </div>
+            <div class="income-card">
+                <h3>Bar Income</h3>
+                <h2>₦{{ bar_income }}</h2>
+            </div>
+            <div class="income-card">
+                <h3>Laundry Income</h3>
+                <h2>₦{{ laundry_income }}</h2>
+            </div>
+        </div>
+
+        <!-- Overall Summary -->
+        <div class="summary">
+            <h2>Total Income</h2>
+            <h2 style="color: #28a745; font-size: 36px;">₦{{ total_income }}</h2>
+
+            <h2 style="margin-top: 30px;">Total Expenses</h2>
+            <h2 style="color: #d9534f; font-size: 32px;">₦{{ total_expenses }}</h2>
+
+            <h2 style="margin-top: 30px;">Net Balance</h2>
+            <div class="net-balance {% if net_balance >= 0 %}positive{% else %}negative{% endif %}">
+                ₦{{ net_balance }}
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

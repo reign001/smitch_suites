@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Check Out Guest - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3b2415;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+
+        .nav-bar a {
+            color: #3b2415;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-bar a:hover {
+            background: #3b2415;
+            color: white;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+            padding: 16px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #f0e9df;
+        }
+
+        tr:hover {
+            background-color: #fffaf5;
+        }
+
+        .price {
+            font-weight: 600;
+            color: #3b2415;
+        }
+
+        .action-btn {
+            background: #3b2415;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #2c1a10;
+            transform: translateY(-2px);
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 60px !important;
+            color: #777;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <h1>Check Out Guest</h1>
+
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <a href="{% url 'reception:dashboard' %}">← Back to Reception Dashboard</a>
+        </div>
+
+        <!-- Guests Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Guest Name</th>
+                        <th>Phone Number</th>
+                        <th>Room Number</th>
+                        <th>Check-In Date</th>
+                        <th>Check-Out Date</th>
+                        <th>Amount Paid</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td><strong>{{ booking.guest.full_name }}</strong></td>
+                        <td>{{ booking.guest.phone }}</td>
+                        <td><strong>{{ booking.room.room_number }}</strong></td>
+                        <td>{{ booking.check_in_date }}</td>
+                        <td>{{ booking.check_out_date }}</td>
+                        <td class="price">₦{{ booking.amount_paid }}</td>
+                        <td>
+                            <a href="{% url 'reception:process_check_out' booking.id %}" 
+                               class="action-btn">
+                                Check Out
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-row">
+                            No checked-in guests available for checkout at this time.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

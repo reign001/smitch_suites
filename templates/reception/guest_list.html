@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guest Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f1eb;
+            padding: 30px;
+        }
+
+        .top, .filter-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        a.button, button {
+            background: #8b5e34;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .download {
+            background: #c28b45;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 25px;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            padding: 13px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .filter-box {
+            margin-top: 25px;
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top">
+    <h1>Guest Records</h1>
+    <a href="{% url 'reception:dashboard' %}" class="button">Back to Dashboard</a>
+</div>
+
+<div class="filter-box">
+    <form method="GET">
+        <label>Select Date:</label>
+        <input type="date" name="date" value="{{ selected_date }}">
+        <button type="submit">Filter</button>
+
+        <a href="{% url 'reception:guest_list' %}" class="button">Clear</a>
+    </form>
+
+    <a
+        href="{% url 'reception:download_guest_list_pdf' %}{% if selected_date %}?date={{ selected_date }}{% endif %}"
+        class="button download"
+    >
+        Download PDF
+    </a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Guest Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Gender</th>
+            <th>ID Type</th>
+            <th>ID Number</th>
+            <th>Date Added</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for guest in guests %}
+        <tr>
+            <td>{{ guest.full_name }}</td>
+            <td>{{ guest.phone }}</td>
+            <td>{{ guest.email }}</td>
+            <td>{{ guest.gender }}</td>
+            <td>{{ guest.id_type }}</td>
+            <td>{{ guest.id_number }}</td>
+            <td>{{ guest.created_at }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No guest records found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

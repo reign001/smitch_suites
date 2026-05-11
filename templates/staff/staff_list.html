@@ -1,0 +1,143 @@
+<div class="module">
+    <div class="page-header">
+        <h1>Users & Staff</h1>
+        <a href="{% url 'staff:add_staff' %}" class="add-btn">
+            + Add New Staff
+        </a>
+    </div>
+
+    <table class="staff-table">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Username</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Job Title</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for staff in staff_members %}
+            <tr>
+                <td>{{ staff.user.full_name|default:staff.user.get_full_name }}</td>
+                <td>{{ staff.user.username }}</td>
+                <td>{{ staff.user.phone|default:"—" }}</td>
+                <td>{{ staff.department|default:"—" }}</td>
+                <td>{{ staff.job_title|default:"—" }}</td>
+                <td>
+                    <span class="status {{ staff.status|lower }}">
+                        {{ staff.status|default:"Active" }}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="no-data">No staff members added yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<style>
+    .module {
+    background: white;
+    padding: 32px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.page-header h1 {
+    color: #3b2415;
+    margin: 0;
+    font-size: 28px;
+}
+
+/* Add Button */
+.add-btn {
+    background: #3b2415;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background: #2c1a10;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(59, 36, 21, 0.25);
+}
+
+/* Table Styling */
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.staff-table th {
+    background: #3b2415;
+    color: white;
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.staff-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f0e9df;
+    color: #444;
+}
+
+.staff-table tr:hover {
+    background-color: #fffaf5;
+}
+
+.staff-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badges */
+.status {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status.inactive, .status.suspended {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* No Data Row */
+.no-data {
+    text-align: center;
+    padding: 40px !important;
+    color: #777;
+    font-style: italic;
+}
+</style>

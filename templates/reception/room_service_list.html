@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Room Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f1eb;
+            padding: 30px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            background: #8b5e34;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .complete {
+            background: #2e8b57;
+        }
+
+        .cancel {
+            background: #8b1e1e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 25px;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top">
+    <div>
+        <h1>Room Service Requests</h1>
+        <p>Manage guest requests and billable room services.</p>
+    </div>
+
+    <div>
+        <a href="{% url 'reception:dashboard' %}" class="button">Dashboard</a>
+        <a href="{% url 'reception:create_room_service' %}" class="button">New Room Service</a>
+    </div>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Guest</th>
+            <th>Room</th>
+            <th>Category</th>
+            <th>Request</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Billable</th>
+            <th>Status</th>
+            <th>Requested By</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for service in services %}
+        <tr>
+            <td>{{ service.booking.guest.full_name }}</td>
+            <td>{{ service.booking.room.room_number }}</td>
+            <td>{{ service.category }}</td>
+            <td>{{ service.request_title }}</td>
+            <td>{{ service.quantity }}</td>
+            <td>₦{{ service.total_amount }}</td>
+            <td>{% if service.is_billable %}Yes{% else %}No{% endif %}</td>
+            <td class="status">{{ service.status }}</td>
+            <td>{{ service.requested_by }}</td>
+            <td>
+                {% if service.status == 'PENDING' or service.status == 'IN_PROGRESS' %}
+                    <a href="{% url 'reception:complete_room_service' service.id %}" class="button complete">Complete</a>
+                    <a href="{% url 'reception:cancel_room_service' service.id %}" class="button cancel">Cancel</a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10">No room service requests yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

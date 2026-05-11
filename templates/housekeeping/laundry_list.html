@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laundry Requests</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f1eb;
+            padding: 30px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            color: #3b2415;
+        }
+
+        .button {
+            background: #8b5e34;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .deliver {
+            background: #2e8b57;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 25px;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .messages {
+            margin-top: 15px;
+        }
+
+        .message {
+            background: #e7f6e7;
+            color: #246324;
+            padding: 10px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top">
+    <div>
+        <h1>Laundry Requests</h1>
+        <p>Track guest laundry, delivery status, and laundry billing.</p>
+    </div>
+
+    <div>
+        <a href="{% url 'housekeeping:dashboard' %}" class="button">Dashboard</a>
+        <a href="{% url 'housekeeping:create_laundry_request' %}" class="button">New Laundry Request</a>
+    </div>
+</div>
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Guest</th>
+            <th>Room</th>
+            <th>Items</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Collected By</th>
+            <th>Date Created</th>
+            <th>Delivered At</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for laundry in requests %}
+        <tr>
+            <td>{{ laundry.booking.guest.full_name }}</td>
+            <td>{{ laundry.booking.room.room_number }}</td>
+            <td>{{ laundry.clothing_items }}</td>
+            <td>{{ laundry.quantity }}</td>
+            <td>₦{{ laundry.amount }}</td>
+            <td>{{ laundry.status }}</td>
+            <td>{{ laundry.collected_by }}</td>
+            <td>{{ laundry.created_at }}</td>
+            <td>{{ laundry.delivered_at }}</td>
+            <td>
+                {% if laundry.status != 'DELIVERED' %}
+                    <a href="{% url 'housekeeping:deliver_laundry' laundry.id %}" class="button deliver">
+                        Mark Delivered
+                    </a>
+                {% else %}
+                    Added to bill
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10">No laundry requests yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

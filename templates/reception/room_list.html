@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Room Status</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f1eb;
+            padding: 30px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            background: #8b5e34;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .download {
+            background: #c28b45;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .card h2 {
+            color: #3b2415;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            padding: 13px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .badge {
+            padding: 6px 10px;
+            border-radius: 20px;
+            color: white;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .available {
+            background: #2e8b57;
+        }
+
+        .reserved {
+            background: #c28b45;
+        }
+
+        .occupied {
+            background: #8b1e1e;
+        }
+
+        .dirty {
+            background: #777;
+        }
+
+        .maintenance {
+            background: #444;
+        }
+
+        @media (max-width: 1000px) {
+            .cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top">
+    <div>
+        <h1>Room Status Board</h1>
+        <p>View all rooms, types, prices and current hotel status.</p>
+    </div>
+
+    <div>
+        <a href="{% url 'reception:dashboard' %}" class="button">Back to Dashboard</a>
+        <a href="{% url 'reception:download_rooms_pdf' %}" class="button download">Download PDF</a>
+    </div>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <h3>Total Rooms</h3>
+        <h2>{{ total_rooms }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Empty Rooms</h3>
+        <h2>{{ available_rooms }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Booked Rooms</h3>
+        <h2>{{ reserved_rooms }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Occupied Rooms</h3>
+        <h2>{{ occupied_rooms }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Dirty Rooms</h3>
+        <h2>{{ dirty_rooms }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Maintenance</h3>
+        <h2>{{ maintenance_rooms }}</h2>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Room Number</th>
+            <th>Room Type</th>
+            <th>Price Per Night</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for room in rooms %}
+        <tr>
+            <td>{{ room.room_number }}</td>
+            <td>{{ room.room_type }}</td>
+            <td>₦{{ room.price_per_night }}</td>
+            <td>
+                {% if room.status == 'AVAILABLE' %}
+                    <span class="badge available">Empty</span>
+                {% elif room.status == 'RESERVED' %}
+                    <span class="badge reserved">Booked</span>
+                {% elif room.status == 'OCCUPIED' %}
+                    <span class="badge occupied">Occupied</span>
+                {% elif room.status == 'DIRTY' %}
+                    <span class="badge dirty">Dirty</span>
+                {% elif room.status == 'MAINTENANCE' %}
+                    <span class="badge maintenance">Maintenance</span>
+                {% else %}
+                    {{ room.status }}
+                {% endif %}
+
+                <td>
+                {% if room.status == 'DIRTY' %}
+                    <a href="{% url 'reception:mark_room_clean' room.id %}" class="button">
+                        Clean
+                    </a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="4">No rooms have been added yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

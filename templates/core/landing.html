@@ -1,0 +1,53 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smitch Suites, Lugbe</title>
+    <link rel="stylesheet" href="{% static 'core/css/landing.css' %}">
+</head>
+<body>
+
+<section class="hero">
+
+    <div class="carousel">
+        <div class="carousel-image image-one">
+            <img src="" alt="">
+        </div>
+        <div class="carousel-image image-two"></div>
+        <div class="carousel-image image-three"></div>
+    </div>
+
+    <div class="hero-overlay"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <h1>Smitch Suites</h1>
+            <span>Lugbe</span>
+            <p>Staff Management Portal</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="background: rgba(255,0,0,0.25); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+                        {{ message }}
+                    </p>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'accounts:login' %}">
+                {% csrf_token %}
+
+                <input type="text" name="username" placeholder="Username or Phone Number" required>
+
+                <input type="password" name="password" placeholder="Password" required>
+
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+</section>
+
+</body>
+</html>

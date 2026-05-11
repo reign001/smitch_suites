@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reception Financial Report</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f1eb;
+            padding: 30px;
+            color: #2c2c2c;
+        }
+
+        .top, .filter-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button, button {
+            background: #8b5e34;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .download {
+            background: #c28b45;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .card h2 {
+            color: #3b2415;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            padding: 11px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="top">
+    <div>
+        <h1>Reception Financial Report</h1>
+        <p>Daily financial summary for Smitch Suites, Lugbe.</p>
+    </div>
+
+    <a href="{% url 'reception:dashboard' %}" class="button">Back to Dashboard</a>
+</div>
+
+<div class="filter-box section">
+    <form method="GET">
+        <label>Select Report Date:</label>
+        <input type="date" name="date" value="{{ selected_date }}">
+        <button type="submit">Generate</button>
+    </form>
+
+    <a href="{% url 'reception:download_finance_report_pdf' %}?date={{ selected_date }}" class="button download">
+        Download PDF
+    </a>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <h3>Total Payments Received</h3>
+        <h2>₦{{ report.total_payments }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Room Sales Created</h3>
+        <h2>₦{{ report.room_sales_total }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Service Charges</h3>
+        <h2>₦{{ report.service_charges_total }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Outstanding Balance</h3>
+        <h2>₦{{ report.outstanding_balance }}</h2>
+    </div>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <h3>Bookings</h3>
+        <h2>{{ report.booking_count }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Check-ins</h3>
+        <h2>{{ report.checkin_count }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Check-outs</h3>
+        <h2>{{ report.checkout_count }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Payments Count</h3>
+        <h2>{{ report.payment_count }}</h2>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Payment Method Breakdown</h2>
+
+    <table>
+        <tr>
+            <th>Cash</th>
+            <td>₦{{ report.cash_total }}</td>
+        </tr>
+        <tr>
+            <th>Bank Transfer</th>
+            <td>₦{{ report.transfer_total }}</td>
+        </tr>
+        <tr>
+            <th>POS</th>
+            <td>₦{{ report.pos_total }}</td>
+        </tr>
+        <tr>
+            <th>Card</th>
+            <td>₦{{ report.card_total }}</td>
+        </tr>
+        <tr>
+            <th>Other</th>
+            <td>₦{{ report.other_total }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="section">
+    <h2>Payments Received</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Method</th>
+                <th>Reference</th>
+                <th>Amount</th>
+                <th>Received By</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for payment in report.payments %}
+            <tr>
+                <td>{{ payment.booking.guest.full_name }}</td>
+                <td>{{ payment.booking.room.room_number }}</td>
+                <td>{{ payment.payment_method }}</td>
+                <td>{{ payment.reference }}</td>
+                <td>₦{{ payment.amount }}</td>
+                <td>{{ payment.received_by }}</td>
+                <td>{{ payment.payment_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No payment received for this date.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="section">
+    <h2>Service / Guest Charges</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Category</th>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Added By</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for charge in report.charges %}
+            <tr>
+                <td>{{ charge.booking.guest.full_name }}</td>
+                <td>{{ charge.booking.room.room_number }}</td>
+                <td>{{ charge.category }}</td>
+                <td>{{ charge.item_name }}</td>
+                <td>{{ charge.quantity }}</td>
+                <td>₦{{ charge.total_amount }}</td>
+                <td>{{ charge.added_by }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No service charges recorded for this date.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

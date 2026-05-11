@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check In Guest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f1eb;
+            padding: 30px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a.button {
+            background: #8b5e34;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background: white;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            padding: 13px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .check-btn {
+            background: #c28b45;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top">
+    <h1>Check In Guest</h1>
+    <a href="{% url 'reception:dashboard' %}" class="button">Back to Dashboard</a>
+</div>
+
+<p>Select a confirmed booking and check the guest into the assigned room.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Guest</th>
+            <th>Phone</th>
+            <th>Room</th>
+            <th>Check-in Date</th>
+            <th>Check-out Date</th>
+            <th>Total</th>
+            <th>Paid</th>
+            <th>Balance</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.guest.full_name }}</td>
+            <td>{{ booking.guest.phone }}</td>
+            <td>{{ booking.room.room_number }}</td>
+            <td>{{ booking.check_in_date }}</td>
+            <td>{{ booking.check_out_date }}</td>
+            <td>₦{{ booking.total_amount }}</td>
+            <td>₦{{ booking.amount_paid }}</td>
+            <td>₦{{ booking.balance }}</td>
+            <td>
+                <a href="{% url 'reception:process_check_in' booking.id %}" class="check-btn">
+                    Check In
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="9">No confirmed bookings waiting for check-in.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

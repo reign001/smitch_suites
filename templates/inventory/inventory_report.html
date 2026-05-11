@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Report - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3b2415;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: #3b2415;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: #3b2415;
+            color: white;
+        }
+
+        .btn-pdf {
+            background: #3b2415;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pdf:hover {
+            background: #2c1a10;
+        }
+
+        /* Statistics */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .stat-card h3 {
+            color: #777;
+            font-size: 14.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card h2 {
+            color: #3b2415;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        /* Report Table */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+            padding: 16px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #f0e9df;
+        }
+
+        tr:hover {
+            background-color: #fffaf5;
+        }
+
+        .status {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .low-stock {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .amount {
+            font-weight: 600;
+            color: #3b2415;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <h1>Inventory Report</h1>
+
+        <!-- Navigation -->
+        <div class="top-nav">
+            <div class="nav-links">
+                <a href="{% url 'inventory:dashboard' %}">← Dashboard</a>
+            </div>
+            <a href="{% url 'inventory:download_inventory_report_pdf' %}" class="btn-pdf">
+                📄 Download PDF Report
+            </a>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Items</h3>
+                <h2>{{ total_items }}</h2>
+            </div>
+            <div class="stat-card">
+                <h3>Low Stock Items</h3>
+                <h2 style="color: #d9534f;">{{ low_stock_items }}</h2>
+            </div>
+            <div class="stat-card">
+                <h3>Total Stock Value</h3>
+                <h2>₦{{ total_stock_value }}</h2>
+            </div>
+        </div>
+
+        <!-- Full Inventory Table -->
+        <h2 style="color: #3b2415; margin-bottom: 15px;">Detailed Inventory</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Unit</th>
+                        <th>Quantity in Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Unit Cost</th>
+                        <th>Total Value</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td><strong>{{ item.name }}</strong></td>
+                        <td>{{ item.category }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td><strong>{{ item.quantity_in_stock }}</strong></td>
+                        <td>{{ item.reorder_level }}</td>
+                        <td>₦{{ item.unit_cost }}</td>
+                        <td class="amount">₦{{ item.total_value|floatformat:2 }}</td>
+                        <td>
+                            {% if item.is_low_stock %}
+                                <span class="status low-stock">Low Stock</span>
+                            {% else %}
+                                <span class="status available">Available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align:center; padding:50px; color:#777;">
+                            No inventory items found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

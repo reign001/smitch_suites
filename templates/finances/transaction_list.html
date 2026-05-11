@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Transactions - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3b2415;
+            font-size: 32px;
+            margin-bottom: 25px;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+            padding: 16px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #f0e9df;
+        }
+
+        tr:hover {
+            background-color: #fffaf5;
+        }
+
+        /* Transaction Type Styling */
+        .type-income {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .type-expense {
+            color: #d9534f;
+            font-weight: 600;
+        }
+
+        .amount {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 60px !important;
+            color: #777;
+            font-style: italic;
+        }
+
+        /* Optional: Add a top bar if needed later */
+        .top-bar {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <h1>Financial Transactions</h1>
+
+        <!-- Transactions Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Source</th>
+                        <th>Amount</th>
+                        <th>Reference</th>
+                        <th>Date & Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>
+                            <span class="{% if transaction.transaction_type == 'Income' or transaction.transaction_type == 'income' %}type-income{% else %}type-expense{% endif %}">
+                                {{ transaction.transaction_type }}
+                            </span>
+                        </td>
+                        <td>{{ transaction.source }}</td>
+                        <td class="amount">
+                            ₦{{ transaction.amount }}
+                        </td>
+                        <td>{{ transaction.reference|default:"—" }}</td>
+                        <td>{{ transaction.created_at }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-row">No transactions recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

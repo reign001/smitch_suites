@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Housekeeping Daily Report - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3b2415;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            background: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn-pdf {
+            background: #3b2415;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pdf:hover {
+            background: #2c1a10;
+        }
+
+        /* Statistics Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #777;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h2 {
+            color: #3b2415;
+            font-size: 38px;
+            font-weight: 700;
+        }
+
+        .date {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <h1>Housekeeping Daily Report</h1>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div>
+                <strong>Date:</strong> {{ today }}
+            </div>
+            <a href="{% url 'housekeeping:download_housekeeping_report_pdf' %}" class="btn-pdf">
+                📄 Download PDF Report
+            </a>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Rooms Cleaned</h3>
+                <h2>{{ cleaning_completed }}</h2>
+            </div>
+            <div class="stat-card">
+                <h3>Laundry Delivered</h3>
+                <h2>{{ laundry_completed }}</h2>
+            </div>
+            <div class="stat-card">
+                <h3>Maintenance Issues</h3>
+                <h2 style="color: #d9534f;">{{ maintenance_issues }}</h2>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

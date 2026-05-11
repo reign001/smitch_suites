@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reception Reports</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f1eb;
+            padding: 30px;
+        }
+
+        .top, .filter-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button, button {
+            background: #8b5e34;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .download {
+            background: #c28b45;
+        }
+
+        select, input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 22px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+        }
+
+        th, td {
+            padding: 11px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top">
+    <div>
+        <h1>Generate Reception Report</h1>
+        <p>Preview and download operational reports.</p>
+    </div>
+
+    <a href="{% url 'reception:dashboard' %}" class="button">Back to Dashboard</a>
+</div>
+
+<div class="filter-box section">
+    <form method="GET">
+        <label>Report Type:</label>
+        <select name="report_type">
+            <option value="in_house" {% if report_type == 'in_house' %}selected{% endif %}>In-House Guests</option>
+            <option value="occupancy" {% if report_type == 'occupancy' %}selected{% endif %}>Occupancy Report</option>
+            <option value="arrivals" {% if report_type == 'arrivals' %}selected{% endif %}>Guest Arrivals</option>
+            <option value="departures" {% if report_type == 'departures' %}selected{% endif %}>Guest Departures</option>
+            <option value="outstanding" {% if report_type == 'outstanding' %}selected{% endif %}>Outstanding Balance</option>
+            <option value="room_service" {% if report_type == 'room_service' %}selected{% endif %}>Room Service</option>
+        </select>
+
+        <label>Date:</label>
+        <input type="date" name="date" value="{{ selected_date }}">
+
+        <button type="submit">Generate</button>
+    </form>
+
+    <a href="{% url 'reception:download_reception_report_pdf' %}?report_type={{ report_type }}&date={{ selected_date }}" class="button download">
+        Download PDF
+    </a>
+</div>
+
+<div class="section">
+    <h2>{{ title }}</h2>
+    <p><strong>Report Date:</strong> {{ selected_date }}</p>
+
+    {% if report_type == 'in_house' %}
+        <p><strong>Total In-House Guests:</strong> {{ total_count }}</p>
+
+        <table>
+            <tr>
+                <th>Guest</th>
+                <th>Phone</th>
+                <th>Room</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Balance</th>
+            </tr>
+
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.guest.full_name }}</td>
+                <td>{{ booking.guest.phone }}</td>
+                <td>{{ booking.room.room_number }}</td>
+                <td>{{ booking.check_in_date }}</td>
+                <td>{{ booking.check_out_date }}</td>
+                <td>₦{{ booking.balance }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No in-house guests.</td></tr>
+            {% endfor %}
+        </table>
+
+    {% elif report_type == 'occupancy' %}
+        <p><strong>Total Rooms:</strong> {{ total_rooms }}</p>
+        <p><strong>Occupancy Rate:</strong> {{ occupancy_rate }}%</p>
+
+        <table>
+            <tr>
+                <th>Available</th>
+                <th>Reserved</th>
+                <th>Occupied</th>
+                <th>Dirty</th>
+                <th>Maintenance</th>
+            </tr>
+            <tr>
+                <td>{{ available }}</td>
+                <td>{{ reserved }}</td>
+                <td>{{ occupied }}</td>
+                <td>{{ dirty }}</td>
+                <td>{{ maintenance }}</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th>Room</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room.room_number }}</td>
+                <td>{{ room.room_type }}</td>
+                <td>₦{{ room.price_per_night }}</td>
+                <td>{{ room.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    {% elif report_type == 'room_service' %}
+        <p><strong>Total Requests:</strong> {{ total_count }}</p>
+        <p><strong>Total Amount:</strong> ₦{{ total_amount }}</p>
+
+        <table>
+            <tr>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Category</th>
+                <th>Request</th>
+                <th>Status</th>
+                <th>Total</th>
+            </tr>
+
+            {% for service in services %}
+            <tr>
+                <td>{{ service.booking.guest.full_name }}</td>
+                <td>{{ service.booking.room.room_number }}</td>
+                <td>{{ service.category }}</td>
+                <td>{{ service.request_title }}</td>
+                <td>{{ service.status }}</td>
+                <td>₦{{ service.total_amount }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No room service records.</td></tr>
+            {% endfor %}
+        </table>
+
+    {% else %}
+        <p><strong>Total Records:</strong> {{ total_count }}</p>
+
+        {% if total_outstanding %}
+            <p><strong>Total Outstanding:</strong> ₦{{ total_outstanding }}</p>
+        {% endif %}
+
+        <table>
+            <tr>
+                <th>Guest</th>
+                <th>Phone</th>
+                <th>Room</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Balance</th>
+            </tr>
+
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.guest.full_name }}</td>
+                <td>{{ booking.guest.phone }}</td>
+                <td>{{ booking.room.room_number }}</td>
+                <td>{{ booking.check_in_date }}</td>
+                <td>{{ booking.check_out_date }}</td>
+                <td>{{ booking.status }}</td>
+                <td>₦{{ booking.balance }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">No records found.</td></tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</div>
+
+</body>
+</html>

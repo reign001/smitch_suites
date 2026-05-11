@@ -32,12 +32,12 @@ load_dotenv(BASE_DIR / ".env", override=True)
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = config(
+ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
-    cast=Csv()
-)
+    "127.0.0.1,localhost"
+).split(",")
 
 
 # Application definition
@@ -102,10 +102,10 @@ WSGI_APPLICATION = 'smitch_suites.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-CSRF_TRUSTED_ORIGINS = config(
+CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
-    cast=Csv()
-)
+    ""
+).split(",")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

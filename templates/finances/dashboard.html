@@ -122,6 +122,41 @@
         
         <h1>Finance Dashboard</h1>
 
+            <form method="GET" style="margin: 20px 0;">
+
+                <label for="date">
+                    <strong>Select Date:</strong>
+                </label>
+
+                <input 
+                    type="date" 
+                    name="date" 
+                    value="{{ selected_date }}"
+                    style="
+                        padding:10px;
+                        border:1px solid #ccc;
+                        border-radius:6px;
+                        margin-left:10px;
+                    "
+                >
+
+                <button 
+                    type="submit"
+                    style="
+                        padding:10px 18px;
+                        background:#8b5e34;
+                        color:white;
+                        border:none;
+                        border-radius:6px;
+                        cursor:pointer;
+                        margin-left:10px;
+                    "
+                >
+                    Generate Report
+                </button>
+
+            </form>
+
         <!-- Navigation -->
         <div class="nav-links">
             <a href="{% url 'finances:expense_list' %}">Expenses</a>

@@ -25,24 +25,35 @@ from .models import (
 from .forms import ExpenseForm
 
 
+from datetime import datetime
+from django.utils import timezone
+from django.db.models import Sum
+
 @login_required
 def finance_dashboard(request):
-    today = timezone.localdate()
+
+    selected_date = request.GET.get('date')
+
+    if selected_date:
+        report_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+    else:
+        report_date = timezone.localdate()
+        selected_date = report_date.strftime('%Y-%m-%d')
 
     accommodation_income = Payment.objects.filter(
-        payment_date__date=today
+        payment_date__date=report_date
     ).aggregate(total=Sum('amount'))['total'] or 0
 
     restaurant_income = RestaurantOrder.objects.filter(
-        created_at__date=today
+        created_at__date=report_date
     ).aggregate(total=Sum('total_amount'))['total'] or 0
 
     bar_income = BarSale.objects.filter(
-        created_at__date=today
+        created_at__date=report_date
     ).aggregate(total=Sum('total_amount'))['total'] or 0
 
     laundry_income = LaundryRequest.objects.filter(
-        delivered_at__date=today
+        delivered_at__date=report_date
     ).aggregate(total=Sum('amount'))['total'] or 0
 
     total_income = (
@@ -53,17 +64,19 @@ def finance_dashboard(request):
     )
 
     total_expenses = Expense.objects.filter(
-        expense_date__date=today
+        expense_date__date=report_date
     ).aggregate(total=Sum('amount'))['total'] or 0
 
     net_balance = total_income - total_expenses
 
     return render(request, 'finances/dashboard.html', {
-        'today': today,
+        'selected_date': selected_date,
+
         'accommodation_income': accommodation_income,
         'restaurant_income': restaurant_income,
         'bar_income': bar_income,
         'laundry_income': laundry_income,
+
         'total_income': total_income,
         'total_expenses': total_expenses,
         'net_balance': net_balance,

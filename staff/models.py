@@ -22,12 +22,9 @@ class StaffProfile(models.Model):
         ('RESTAURANT', 'Restaurant'),
         ('BAR', 'Bar'),
         ('HOUSEKEEPING', 'Housekeeping'),
-        ('MAINTENANCE', 'Maintenance'),
         ('ACCOUNTS', 'Accounts'),
         ('FINANCE', 'Finance'),
         ('STORE', 'Store'),
-        ('MANAGEMENT', 'Management'),
-        ('SECURITY', 'Security'),
         ('OTHER', 'Other'),
     ]
 

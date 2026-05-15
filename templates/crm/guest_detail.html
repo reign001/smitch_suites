@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guest CRM Profile - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3b2415;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            color: #777;
+            text-decoration: none;
+            font-size: 15px;
+            margin-bottom: 25px;
+            display: inline-block;
+        }
+
+        .back-link:hover {
+            color: #3b2415;
+        }
+
+        /* Guest Info Card */
+        .guest-info {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+
+        .guest-name {
+            font-size: 28px;
+            color: #3b2415;
+            margin-bottom: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        /* CRM Form */
+        .crm-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+
+        /* Tables */
+        .section-title {
+            color: #3b2415;
+            margin: 35px 0 15px;
+            font-size: 24px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #3b2415;
+            color: white;
+            padding: 16px 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #f0e9df;
+        }
+
+        tr:hover {
+            background-color: #fffaf5;
+        }
+
+        .amount {
+            font-weight: 600;
+            color: #3b2415;
+        }
+
+        .status {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 50px !important;
+            color: #777;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <a href="{% url 'crm:guest_list' %}" class="back-link">← Back to Guest List</a>
+        
+        <h1>Guest CRM Profile</h1>
+
+        <!-- Guest Basic Information -->
+        <div class="guest-info">
+            <div class="guest-name">{{ guest.full_name }}</div>
+            <div class="info-grid">
+                <div><strong>Phone:</strong> {{ guest.phone|default:"—" }}</div>
+                <div><strong>Email:</strong> {{ guest.email|default:"—" }}</div>
+                <div><strong>Gender:</strong> {{ guest.gender|default:"—" }}</div>
+                <div><strong>Address:</strong> {{ guest.address|default:"—" }}</div>
+                <div><strong>ID Type:</strong> {{ guest.id_type|default:"—" }}</div>
+                <div><strong>ID Number:</strong> {{ guest.id_number|default:"—" }}</div>
+                <div><strong>Total Spent:</strong> <span style="color:#28a745; font-weight:600;">₦{{ total_spent }}</span></div>
+            </div>
+        </div>
+
+        <!-- CRM Classification -->
+        <div class="crm-card">
+            <h2 style="margin-bottom:20px; color:#3b2415;">CRM Classification</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" style="margin-top:20px; padding:14px 30px; background:#3b2415; color:white; border:none; border-radius:8px; cursor:pointer;">
+                    Update CRM Profile
+                </button>
+            </form>
+        </div>
+
+        <!-- Booking History -->
+        <h2 class="section-title">Booking History</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Room</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td><strong>{{ booking.room.room_number }}</strong></td>
+                        <td>{{ booking.check_in_date }}</td>
+                        <td>{{ booking.check_out_date }}</td>
+                        <td>{{ booking.status }}</td>
+                        <td class="amount">₦{{ booking.total_amount }}</td>
+                        <td class="amount">₦{{ booking.amount_paid }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="empty-row">No booking history found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Guest Charges -->
+        <h2 class="section-title">Guest Charges / Services Used</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for charge in guest_charges %}
+                    <tr>
+                        <td>{{ charge.category }}</td>
+                        <td>{{ charge.item_name }}</td>
+                        <td>{{ charge.quantity }}</td>
+                        <td class="amount">₦{{ charge.total_amount }}</td>
+                        <td>{{ charge.created_at }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="empty-row">No service charges recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Complaints -->
+        <h2 class="section-title">Complaints</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Resolution</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint.title }}</td>
+                        <td>{{ complaint.status }}</td>
+                        <td>{{ complaint.resolution_note|default:"—" }}</td>
+                        <td>{{ complaint.created_at }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="empty-row">No complaints recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Feedback -->
+        <h2 class="section-title">Guest Feedback</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feedback in feedbacks %}
+                    <tr>
+                        <td><strong>{{ feedback.rating }}/5</strong></td>
+                        <td>{{ feedback.comment|default:"—" }}</td>
+                        <td>{{ feedback.created_at }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="empty-row">No feedback recorded yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -183,9 +183,10 @@
         <a href="#">Kitchen</a> 
         <a href="{% url 'housekeeping:dashboard' %}">Housekeeping</a>
         <a href="{% url 'inventory:dashboard' %}">Store</a>
-        <a href="#">Security</a>
+        <a href="{% url 'security:dashboard' %}">Security</a>
+        <a href="{% url 'crm:dashboard' %}">CRM</a>
         <a href="{% url 'finances:dashboard' %}">Finances</a>
-        <a href="#">Reports</a> 
+        <a href="{% url 'report:dashboard' %}">Reports</a> 
     </aside>
 
     <main class="main">

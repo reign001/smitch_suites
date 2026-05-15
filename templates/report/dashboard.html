@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports Center - Smitch Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f1eb;
+            color: #2c2c2c;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b2415, #5c3a24);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16.5px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            padding: 45px 40px;
+        }
+
+        label {
+            display: block;
+            margin: 20px 0 8px;
+            font-weight: 600;
+            color: #3b2415;
+            font-size: 15px;
+        }
+
+        select,
+        input[type="date"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e0d5c0;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #fffaf5;
+            transition: all 0.3s ease;
+        }
+
+        select:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #3b2415;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(59, 36, 21, 0.1);
+        }
+
+        button[type="submit"] {
+            margin-top: 35px;
+            width: 100%;
+            background: #3b2415;
+            color: white;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background: #2c1a10;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(59, 36, 21, 0.25);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #777;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .back-link:hover {
+            color: #3b2415;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>Smitch Suites Reports Center</h1>
+            <p>Generate hotel-wide reports for daily, weekly, or monthly operations</p>
+        </div>
+
+        <!-- Form -->
+        <div class="form-container">
+            <form method="GET" action="{% url 'report:generate_report' %}">
+                
+                <label>Report Period</label>
+                <select name="period" required>
+                    <option value="day">Daily Report</option>
+                    <option value="week">Weekly Report</option>
+                    <option value="month">Monthly Report</option>
+                </select>
+
+                <label>Select Date</label>
+                <input type="date" name="date" value="{{ selected_date }}" required>
+
+                <button type="submit">Generate Report</button>
+            </form>
+
+            <a href="{% url 'dashboard:admin_dashboard' %}" class="back-link">
+                ← Back to Admin Dashboard
+            </a>
+        </div>
+
+    </div>
+</body>
+</html>

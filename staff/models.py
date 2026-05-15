@@ -22,10 +22,11 @@ class StaffProfile(models.Model):
         ('RESTAURANT', 'Restaurant'),
         ('BAR', 'Bar'),
         ('HOUSEKEEPING', 'Housekeeping'),
-        ('ACCOUNTS', 'Accounts'),
         ('FINANCE', 'Finance'),
+        ('SECURITY', 'Security'),
         ('STORE', 'Store'),
         ('OTHER', 'Other'),
+        
     ]
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff_profile')

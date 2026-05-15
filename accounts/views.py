@@ -49,6 +49,9 @@ def staff_login(request):
             
             elif staff_profile.department == 'FINANCE':
                     return redirect('finances:dashboard')
+            
+            elif staff_profile.department == 'SECURITY':
+                    return redirect('security:dashboard')
 
             messages.error(request, 'No dashboard has been assigned to your department yet.')
             return redirect('landing')

@@ -59,6 +59,9 @@ INSTALLED_APPS = [
     'bar',
     'housekeeping',
     'finances',
+    'report',
+    'crm',
+    'security',
 ]
 
 
@@ -107,24 +110,24 @@ CSRF_TRUSTED_ORIGINS = os.getenv(
     ""
 ).split(",")
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# DATABASE_URL = os.getenv("DATABASE_URL")
 
 # print("USING DATABASE:", DATABASE_URL)  # temporary check
 
-DATABASES = {
-    "default": dj_database_url.parse(
-        DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
+#     "default": dj_database_url.parse(
+#         DATABASE_URL,
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation

@@ -12,6 +12,7 @@ class CustomUser(AbstractUser):
         ('STORE_MANAGER', 'Store Manager'),
         ('HOUSE_KEEPER', 'House Keeper'),
         ('SALES_PERSON', 'Sales Person'),
+        ('SECURITY', 'Security'),
     ]
 
     full_name = models.CharField(max_length=150, blank=True)
